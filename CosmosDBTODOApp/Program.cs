@@ -11,17 +11,25 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<ICosmosService>(InitializeCosmosClientInstanceAsync(
     builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
 
+builder.Services.AddCors(cors =>
+{
+    cors.AddPolicy("AllowOrigin", c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
+
 // Creates a Cosmos DB database and a container with the specified partition key.
-static async Task<CosmosService> InitializeCosmosClientInstanceAsync(IConfiguration configuration)
+static async Task<CosmosService> InitializeCosmosClientInstanceAsync(IConfigurationSection configuration)
 {
     string databaseName = configuration.GetSection("DatabaseName").Value;
     string containerName = configuration.GetSection("ContainerName").Value;
     string account = configuration.GetSection("Account").Value;
     string key = configuration.GetSection("Key").Value;
     CosmosClient client = new CosmosClient(account, key);
-    CosmosService service = new CosmosService(client, databaseName, containerName);
+    
     DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+
+    CosmosService service = new CosmosService(client, databaseName, containerName);
 
     return service;
 }

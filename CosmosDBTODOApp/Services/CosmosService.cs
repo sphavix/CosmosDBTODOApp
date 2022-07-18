@@ -41,12 +41,12 @@ namespace CosmosDBTODOApp.Services
 
         public async Task AddItemAsync(Item item)
         {
-            await this._container.CreateItemAsync<Item>(item, new PartitionKey(item.Id));
+            await this._container.CreateItemAsync(item, new PartitionKey(item.Id));
         }
 
         public async Task UpdateItemAsync(string id, Item item)
         {
-            await this._container.UpsertItemAsync<Item>(item, new PartitionKey(item.Id));
+            await this._container.UpsertItemAsync(item, new PartitionKey(item.Id));
         }
 
         public async Task DeleteItemAsync(string id)

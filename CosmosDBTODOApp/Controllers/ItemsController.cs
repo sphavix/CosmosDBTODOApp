@@ -37,7 +37,7 @@ namespace CosmosDBTODOApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                //item.Id = Guid.NewGuid().ToString();
+                item.Id = Guid.NewGuid().ToString();
                 await _dbcontext.AddItemAsync(item);
                 return RedirectToAction("Index");
             }
